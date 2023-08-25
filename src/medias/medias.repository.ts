@@ -8,14 +8,23 @@ export class MediasRepository {
 
   constructor(private readonly prisma: PrismaService){}
 
+  async findMedia(createMediaDto: CreateMediaDto){
+    return await this.prisma.media.findFirst({
+      where: {
+        title: createMediaDto.title,
+        username: createMediaDto.username
+      }
+    });
+  }
+
   async create(createMediaDto: CreateMediaDto) {
     return await this.prisma.media.create({
       data: createMediaDto
     });
   }
 
-  findAll() {
-    return `This action returns all medias`;
+  async findAll() {
+    return await this.prisma.media.findMany();
   }
 
   findOne(id: number) {

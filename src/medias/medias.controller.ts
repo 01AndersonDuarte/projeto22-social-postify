@@ -9,16 +9,12 @@ export class MediasController {
 
   @Post()
   async create(@Body() createMediaDto: CreateMediaDto) {
-    try {
-      return await this.mediasService.create(createMediaDto);
-    } catch (error) {
-    }
-
+    return await this.mediasService.create(createMediaDto);
   }
 
   @Get()
-  findAll() {
-    return this.mediasService.findAll();
+  async findAll() {
+    return await this.mediasService.findAll();
   }
 
   @Get(':id')

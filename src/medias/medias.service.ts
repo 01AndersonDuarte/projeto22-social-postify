@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { MediasRepository } from './medias.repository';
@@ -9,11 +9,15 @@ export class MediasService {
   constructor(private readonly mediasRepository: MediasRepository){}
 
   async create(createMediaDto: CreateMediaDto) {
+    const media = await this.mediasRepository.findMedia(createMediaDto);
+    if(media!==null) {
+      throw new HttpException("Item já criado", HttpStatus.CONFLICT);
+    }
     await this.mediasRepository.create(createMediaDto);
   }
 
-  findAll() {
-    return `This action returns all medias`;
+  async findAll() {
+    return await this.mediasRepository.findAll();
   }
 
   findOne(id: number) {
