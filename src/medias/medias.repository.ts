@@ -8,7 +8,7 @@ export class MediasRepository {
 
   constructor(private readonly prisma: PrismaService){}
 
-  async findMedia(createMediaDto: CreateMediaDto){
+  async verifyMedia(createMediaDto: CreateMediaDto){
     return await this.prisma.media.findFirst({
       where: {
         title: createMediaDto.title,
@@ -27,12 +27,24 @@ export class MediasRepository {
     return await this.prisma.media.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} media`;
+  async findMediaById(id: number) {
+    return this.prisma.media.findFirst({
+      where: {
+        id
+      }
+    });
   }
 
-  update(id: number, updateMediaDto: UpdateMediaDto) {
-    return `This action updates a #${id} media`;
+  async update(id: number, updateMediaDto: UpdateMediaDto) {
+    return await this.prisma.media.update({
+      where: {
+        id
+      },
+      data: {
+        title: updateMediaDto.title,
+        username: updateMediaDto.username
+      }
+    });
   }
 
   remove(id: number) {

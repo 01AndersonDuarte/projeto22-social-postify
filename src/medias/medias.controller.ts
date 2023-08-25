@@ -18,13 +18,13 @@ export class MediasController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mediasService.findOne(+id);
+  async findMediaById(@Param('id') id: string) {
+    return await this.mediasService.findMediaById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return this.mediasService.update(+id, updateMediaDto);
+  async update(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
+    return await this.mediasService.update(+id, updateMediaDto);
   }
 
   @Delete(':id')

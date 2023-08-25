@@ -7,25 +7,33 @@ import { MediasRepository } from './medias.repository';
 export class MediasService {
 
   constructor(private readonly mediasRepository: MediasRepository){}
+  
+  async verifyMedia(title: string, username: string){
+    const media = await this.mediasRepository.verifyMedia({title, username});
+    if(media) throw new HttpException("Item já criado", HttpStatus.CONFLICT);
+  }
 
   async create(createMediaDto: CreateMediaDto) {
-    const media = await this.mediasRepository.findMedia(createMediaDto);
-    if(media!==null) {
-      throw new HttpException("Item já criado", HttpStatus.CONFLICT);
-    }
-    await this.mediasRepository.create(createMediaDto);
+    await this.verifyMedia(createMediaDto.title, createMediaDto.username);
+    return await this.mediasRepository.create(createMediaDto);
   }
 
   async findAll() {
     return await this.mediasRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} media`;
+  async findMediaById(id: number) {
+    const media = await this.mediasRepository.findMediaById(id);
+    if(!media) throw new HttpException("Registro não encontrado", HttpStatus.NOT_FOUND);
+
+    return media;
   }
 
-  update(id: number, updateMediaDto: UpdateMediaDto) {
-    return `This action updates a #${id} media`;
+  async update(id: number, updateMediaDto: UpdateMediaDto) {
+    await this.verifyMedia(updateMediaDto.title, updateMediaDto.username);
+    await this.findMediaById(id);
+
+    return await this.mediasRepository.update(id, updateMediaDto);
   }
 
   remove(id: number) {
