@@ -6,9 +6,9 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class MediasRepository {
 
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async verifyMedia(createMediaDto: CreateMediaDto){
+  async verifyMedia(createMediaDto: CreateMediaDto) {
     return await this.prisma.media.findFirst({
       where: {
         title: createMediaDto.title,
@@ -48,6 +48,8 @@ export class MediasRepository {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} media`;
+    return this.prisma.media.delete({
+      where: { id }
+    });
   }
 }

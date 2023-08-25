@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
-import { PublicationsRepository } from './publications.repository';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class PublicationsService {
+export class PublicationsRepository {
 
-  constructor(private readonly publicationsRepository: PublicationsRepository){}
+  constructor(private readonly prisma: PrismaService) { }
 
   create(createPublicationDto: CreatePublicationDto) {
     return 'This action adds a new publication';
@@ -28,7 +28,9 @@ export class PublicationsService {
     return `This action removes a #${id} publication`;
   }
 
-  async findPublicationByMediaId(id: number){
-    return this.publicationsRepository.findPublicationByMediaId(id)
+  async findPublicationByMediaId(id: number) {
+    return this.prisma.publication.findFirst({
+      where: { id }
+    });
   }
 }
