@@ -8,27 +8,27 @@ export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto) {
-    return this.publicationsService.create(createPublicationDto);
+  async createPublication(@Body() createPublicationDto: CreatePublicationDto) {
+    return await this.publicationsService.createPublication(createPublicationDto);
   }
 
   @Get()
-  findAll() {
-    return this.publicationsService.findAll();
+  async findAllPublications() {
+    return await this.publicationsService.findAllPublications();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.publicationsService.findOne(+id);
+  async findPublicationById(@Param('id') id: string) {
+    return await this.publicationsService.findPublicationById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
-    return this.publicationsService.update(+id, updatePublicationDto);
+  async updatePublication(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
+    return await this.publicationsService.updatePublication(+id, updatePublicationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.publicationsService.remove(+id);
+  async removePublication(@Param('id') id: string) {
+    return await this.publicationsService.removePublication(+id);
   }
 }

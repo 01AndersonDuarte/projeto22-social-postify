@@ -9,5 +9,6 @@ import { PublicationsModule } from '../publications/publications.module';
   imports: [PrismaModule, PublicationsModule],
   controllers: [MediasController],
   providers: [MediasService, MediasRepository],
+  exports: [MediasService]
 })
 export class MediasModule { }

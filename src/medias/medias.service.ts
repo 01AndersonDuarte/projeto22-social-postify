@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { MediasRepository } from './medias.repository';
@@ -8,7 +8,7 @@ import { PublicationsService } from '../publications/publications.service';
 export class MediasService {
 
   constructor(private readonly mediasRepository: MediasRepository,
-    private readonly publicationsService: PublicationsService){}
+    @Inject(forwardRef(() => PublicationsService)) private publicationsService: PublicationsService){}
 
   async verifyMedia(title: string, username: string){
     const media = await this.mediasRepository.verifyMedia({title, username});

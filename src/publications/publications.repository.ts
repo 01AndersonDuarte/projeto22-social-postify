@@ -8,35 +8,42 @@ export class PublicationsRepository {
 
   constructor(private readonly prisma: PrismaService) { }
 
-  create(createPublicationDto: CreatePublicationDto) {
-    return 'This action adds a new publication';
+  async createPublication(data: CreatePublicationDto) {
+    return await this.prisma.publication.create({ data });
   }
 
-  findAll() {
-    return `This action returns all publications`;
+  async findAllPublications() {
+    return await this.prisma.publication.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} publication`;
+  async findPublicationById(id: number) {
+    return await this.prisma.publication.findFirst({ where: { id } });
   }
 
-  update(id: number, updatePublicationDto: UpdatePublicationDto) {
-    return `This action updates a #${id} publication`;
+  async updatePublication(id: number, data: UpdatePublicationDto) {
+    return await this.prisma.publication.update({ where: { id }, data });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} publication`;
+  async removePublication(id: number) {
+    return await this.prisma.publication.delete({ where: { id } });
   }
 
   async findPublicationByMediaId(id: number) {
-    return this.prisma.publication.findFirst({
+    return await this.prisma.publication.findFirst({
       where: { mediaId: id }
     });
   }
 
   async findPublicationByPostId(id: number) {
-    return this.prisma.publication.findFirst({
+    return await this.prisma.publication.findFirst({
       where: { postId: id }
     });
+  }
+
+  async findMediaAndPost(idMedia: number, idPost: number) {
+    const media = await this.prisma.media.findFirst({ where: { id: idMedia } });
+    const post = await this.prisma.publication.findFirst({ where: { id: idPost } });
+
+    return { media, post };
   }
 }

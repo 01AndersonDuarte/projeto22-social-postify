@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { PublicationsRepository } from './publications.repository';
@@ -6,33 +6,47 @@ import { PublicationsRepository } from './publications.repository';
 @Injectable()
 export class PublicationsService {
 
-  constructor(private readonly publicationsRepository: PublicationsRepository){}
+  constructor(private readonly publicationsRepository: PublicationsRepository) { }
 
-  create(createPublicationDto: CreatePublicationDto) {
-    return 'This action adds a new publication';
+  async checkMediaAndPostId(mediaId: number, postId: number){
+    const checkData = await this.publicationsRepository.findMediaAndPost(mediaId, postId);
+    if(!checkData.media || !checkData.post) throw new HttpException("Dados inválidos", HttpStatus.NOT_FOUND);
   }
 
-  findAll() {
-    return `This action returns all publications`;
+  async createPublication(data: CreatePublicationDto) {
+    await this.checkMediaAndPostId(data.mediaId, data.postId);
+    return await this.publicationsRepository.createPublication(data);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} publication`;
+  async findAllPublications() {
+    return await this.publicationsRepository.findAllPublications();
   }
 
-  update(id: number, updatePublicationDto: UpdatePublicationDto) {
-    return `This action updates a #${id} publication`;
+  async findPublicationById(id: number) {
+    const publication = await this.publicationsRepository.findPublicationById(id);
+    if(!publication) throw new HttpException("Publicação não encontrada", HttpStatus.NOT_FOUND);
+    
+    return publication;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} publication`;
+  async updatePublication(id: number, data: UpdatePublicationDto) {
+    const publication = await this.findPublicationById(id);
+    if(new Date() > publication.date) throw new HttpException("Publicação já postada", HttpStatus.FORBIDDEN);
+    await this.checkMediaAndPostId(data.mediaId, data.postId);
+
+    return this.publicationsRepository.updatePublication(id, data);
   }
 
-  async findPublicationByMediaId(id: number){
-    return this.publicationsRepository.findPublicationByMediaId(id)
+  async removePublication(id: number) {
+    await this.findPublicationById(id);
+    return await this.publicationsRepository.removePublication(id);
   }
 
-  async findPublicationByPostId(id: number){
-    return this.publicationsRepository.findPublicationByPostId(id)
+  async findPublicationByMediaId(id: number) {
+    return await this.publicationsRepository.findPublicationByMediaId(id)
+  }
+
+  async findPublicationByPostId(id: number) {
+    return await this.publicationsRepository.findPublicationByPostId(id)
   }
 }
