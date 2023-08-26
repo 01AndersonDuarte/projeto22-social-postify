@@ -15,13 +15,13 @@ export class MediasService {
     if(media) throw new HttpException("Item já criado", HttpStatus.CONFLICT);
   }
 
-  async create(createMediaDto: CreateMediaDto) {
+  async createMedia(createMediaDto: CreateMediaDto) {
     await this.verifyMedia(createMediaDto.title, createMediaDto.username);
-    return await this.mediasRepository.create(createMediaDto);
+    return await this.mediasRepository.createMedia(createMediaDto);
   }
 
-  async findAll() {
-    return await this.mediasRepository.findAll();
+  async findAllMedias() {
+    return await this.mediasRepository.findAllMedias();
   }
 
   async findMediaById(id: number) {
@@ -31,18 +31,18 @@ export class MediasService {
     return media;
   }
 
-  async update(id: number, updateMediaDto: UpdateMediaDto) {
+  async updateMedia(id: number, updateMediaDto: UpdateMediaDto) {
     await this.verifyMedia(updateMediaDto.title, updateMediaDto.username);
     await this.findMediaById(id);
 
-    return await this.mediasRepository.update(id, updateMediaDto);
+    return await this.mediasRepository.updateMedia(id, updateMediaDto);
   }
 
-  async remove(id: number) {
+  async removeMedia(id: number) {
     const media = await this.findMediaById(id);
     const publication = await this.publicationsService.findPublicationByMediaId(media.id);
     if(publication) throw new HttpException("Publicação já criada!", HttpStatus.FORBIDDEN);
     
-    return this.mediasRepository.remove(id);
+    return this.mediasRepository.removeMedia(id);
   }
 }

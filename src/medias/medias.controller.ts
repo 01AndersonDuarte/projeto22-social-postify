@@ -8,13 +8,13 @@ export class MediasController {
   constructor(private readonly mediasService: MediasService) { }
 
   @Post()
-  async create(@Body() createMediaDto: CreateMediaDto) {
-    return await this.mediasService.create(createMediaDto);
+  async createMedia(@Body() createMediaDto: CreateMediaDto) {
+    return await this.mediasService.createMedia(createMediaDto);
   }
 
   @Get()
-  async findAll() {
-    return await this.mediasService.findAll();
+  async findAllMedias() {
+    return await this.mediasService.findAllMedias();
   }
 
   @Get(':id')
@@ -23,12 +23,12 @@ export class MediasController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return await this.mediasService.update(+id, updateMediaDto);
+  async updateMedia(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
+    return await this.mediasService.updateMedia(+id, updateMediaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mediasService.remove(+id);
+  removeMedia(@Param('id') id: string) {
+    return this.mediasService.removeMedia(+id);
   }
 }

@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostsRepository } from './posts.repository';
+import { PublicationsService } from '../publications/publications.service';
 
 @Injectable()
 export class PostsService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  
+  constructor(private readonly postsRepository: PostsRepository,
+    private readonly publicationsService: PublicationsService){}
+
+  async createPost(createPostDto: CreatePostDto) {
+    return this.postsRepository.create(createPostDto);
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAllPosts() {
+    return await this.postsRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findPostById(id: number) {
+    const post = await this.postsRepository.findPostById(id);
+    if(!post) throw new HttpException("Post inválido", HttpStatus.NOT_FOUND);
+
+    return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async updatePost(id: number, updatePostDto: UpdatePostDto) {
+    await this.findPostById(id);
+    return await this.postsRepository.update(id, updatePostDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async removePost(id: number) {
+    const post = await this.findPostById(id);
+    const publication = await this.publicationsService.findPublicationByPostId(post.id);
+    if(publication) throw new HttpException("Publicação já criada!", HttpStatus.FORBIDDEN);
+    
+    return this.postsRepository.remove(id);
   }
 }

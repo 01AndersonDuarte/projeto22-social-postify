@@ -17,13 +17,13 @@ export class MediasRepository {
     });
   }
 
-  async create(createMediaDto: CreateMediaDto) {
+  async createMedia(createMediaDto: CreateMediaDto) {
     return await this.prisma.media.create({
       data: createMediaDto
     });
   }
 
-  async findAll() {
+  async findAllMedias() {
     return await this.prisma.media.findMany();
   }
 
@@ -35,7 +35,7 @@ export class MediasRepository {
     });
   }
 
-  async update(id: number, updateMediaDto: UpdateMediaDto) {
+  async updateMedia(id: number, updateMediaDto: UpdateMediaDto) {
     return await this.prisma.media.update({
       where: {
         id
@@ -47,7 +47,7 @@ export class MediasRepository {
     });
   }
 
-  remove(id: number) {
+  removeMedia(id: number) {
     return this.prisma.media.delete({
       where: { id }
     });

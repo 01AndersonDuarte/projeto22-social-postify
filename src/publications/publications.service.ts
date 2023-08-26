@@ -31,4 +31,8 @@ export class PublicationsService {
   async findPublicationByMediaId(id: number){
     return this.publicationsRepository.findPublicationByMediaId(id)
   }
+
+  async findPublicationByPostId(id: number){
+    return this.publicationsRepository.findPublicationByPostId(id)
+  }
 }

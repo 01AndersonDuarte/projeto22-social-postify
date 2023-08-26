@@ -30,7 +30,13 @@ export class PublicationsRepository {
 
   async findPublicationByMediaId(id: number) {
     return this.prisma.publication.findFirst({
-      where: { id }
+      where: { mediaId: id }
+    });
+  }
+
+  async findPublicationByPostId(id: number) {
+    return this.prisma.publication.findFirst({
+      where: { postId: id }
     });
   }
 }
