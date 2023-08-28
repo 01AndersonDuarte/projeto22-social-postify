@@ -32,8 +32,8 @@ export class MediasService {
   }
 
   async updateMedia(id: number, updateMediaDto: UpdateMediaDto) {
-    await this.verifyMedia(updateMediaDto.title, updateMediaDto.username);
     await this.findMediaById(id);
+    await this.verifyMedia(updateMediaDto.title, updateMediaDto.username);
 
     return await this.mediasRepository.updateMedia(id, updateMediaDto);
   }
