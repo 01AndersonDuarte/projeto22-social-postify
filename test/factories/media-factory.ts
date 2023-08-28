@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import { PrismaService } from "../../src/prisma/prisma.service";
+import { faker } from '@faker-js/faker';
+import { PrismaService } from '../../src/prisma/prisma.service';
 
 export async function createMedia(prisma: PrismaService) {
   const socialMediaNames = [
@@ -9,14 +9,14 @@ export async function createMedia(prisma: PrismaService) {
     'LinkedIn',
     'TikTok',
     'Snapchat',
-    'Pinterest'
+    'Pinterest',
   ];
-  
+
   const randomSocialMedia = socialMediaNames[Math.floor(Math.random() * 7)];
   return prisma.media.create({
     data: {
       title: randomSocialMedia,
-      username: faker.internet.userName()
+      username: faker.internet.userName(),
     },
   });
 }

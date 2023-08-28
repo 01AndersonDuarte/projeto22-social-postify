@@ -5,8 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PublicationsRepository {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async createPublication(data: CreatePublicationDto) {
     return await this.prisma.publication.create({ data });
@@ -30,19 +29,19 @@ export class PublicationsRepository {
 
   async findPublicationByMediaId(id: number) {
     return await this.prisma.publication.findFirst({
-      where: { mediaId: id }
+      where: { mediaId: id },
     });
   }
 
   async findPublicationByPostId(id: number) {
     return await this.prisma.publication.findFirst({
-      where: { postId: id }
+      where: { postId: id },
     });
   }
 
   async findMediaAndPost(idMedia: number, idPost: number) {
     const media = await this.prisma.media.findFirst({ where: { id: idMedia } });
-    const post = await this.prisma.publication.findFirst({ where: { id: idPost } });
+    const post = await this.prisma.post.findFirst({ where: { id: idPost } });
 
     return { media, post };
   }

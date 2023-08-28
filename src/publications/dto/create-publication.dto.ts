@@ -1,16 +1,16 @@
-import { IsDataURI, IsDate, IsDateString, IsNotEmpty, IsNumber, IsString, isDate } from "class-validator"
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePublicationDto {
-    @IsNumber()
-    @IsNotEmpty()
-    mediaId: number;
+  @IsNumber()
+  @IsNotEmpty()
+  mediaId: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    postId: number;
+  @IsNumber()
+  @IsNotEmpty()
+  postId: number;
 
-    @IsString()
-    @IsDateString()
-    @IsNotEmpty()
-    date: string;
+  @IsString()
+  @IsDateString()
+  @IsNotEmpty()
+  date: string;
 }

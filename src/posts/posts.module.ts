@@ -9,6 +9,6 @@ import { PublicationsModule } from '../publications/publications.module';
   imports: [PrismaModule, PublicationsModule],
   controllers: [PostsController],
   providers: [PostsService, PostsRepository],
-  exports: [PostsService]
+  exports: [PostsService],
 })
 export class PostsModule {}

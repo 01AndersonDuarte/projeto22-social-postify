@@ -5,12 +5,17 @@ import { PublicationsRepository } from './publications.repository';
 
 @Injectable()
 export class PublicationsService {
+  constructor(
+    private readonly publicationsRepository: PublicationsRepository,
+  ) {}
 
-  constructor(private readonly publicationsRepository: PublicationsRepository) { }
-
-  async checkMediaAndPostId(mediaId: number, postId: number){
-    const checkData = await this.publicationsRepository.findMediaAndPost(mediaId, postId);
-    if(!checkData.media || !checkData.post) throw new HttpException("Dados inválidos", HttpStatus.NOT_FOUND);
+  async checkMediaAndPostId(mediaId: number, postId: number) {
+    const checkData = await this.publicationsRepository.findMediaAndPost(
+      mediaId,
+      postId,
+    );
+    if (!checkData.media || !checkData.post)
+      throw new HttpException('Dados inválidos', HttpStatus.NOT_FOUND);
   }
 
   async createPublication(data: CreatePublicationDto) {
@@ -23,16 +28,22 @@ export class PublicationsService {
   }
 
   async findPublicationById(id: number) {
-    const publication = await this.publicationsRepository.findPublicationById(id);
-    if(!publication) throw new HttpException("Publicação não encontrada", HttpStatus.NOT_FOUND);
-    
+    const publication =
+      await this.publicationsRepository.findPublicationById(id);
+    if (!publication)
+      throw new HttpException(
+        'Publicação não encontrada',
+        HttpStatus.NOT_FOUND,
+      );
+
     return publication;
   }
 
   async updatePublication(id: number, data: UpdatePublicationDto) {
     const publication = await this.findPublicationById(id);
-    if(new Date() > publication.date) throw new HttpException("Publicação já postada", HttpStatus.FORBIDDEN);
     await this.checkMediaAndPostId(data.mediaId, data.postId);
+    if (new Date() > publication.date)
+      throw new HttpException('Publicação já postada', HttpStatus.FORBIDDEN);
 
     return this.publicationsRepository.updatePublication(id, data);
   }
@@ -43,10 +54,10 @@ export class PublicationsService {
   }
 
   async findPublicationByMediaId(id: number) {
-    return await this.publicationsRepository.findPublicationByMediaId(id)
+    return await this.publicationsRepository.findPublicationByMediaId(id);
   }
 
   async findPublicationByPostId(id: number) {
-    return await this.publicationsRepository.findPublicationByPostId(id)
+    return await this.publicationsRepository.findPublicationByPostId(id);
   }
 }

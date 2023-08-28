@@ -5,12 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PostsRepository {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createPostDto: CreatePostDto) {
     return await this.prisma.post.create({
-      data: createPostDto
+      data: createPostDto,
     });
   }
 
@@ -25,7 +24,7 @@ export class PostsRepository {
   update(id: number, data: UpdatePostDto) {
     return this.prisma.post.update({
       where: { id },
-      data
+      data,
     });
   }
 

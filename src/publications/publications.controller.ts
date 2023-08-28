@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
@@ -9,7 +17,9 @@ export class PublicationsController {
 
   @Post()
   async createPublication(@Body() createPublicationDto: CreatePublicationDto) {
-    return await this.publicationsService.createPublication(createPublicationDto);
+    return await this.publicationsService.createPublication(
+      createPublicationDto,
+    );
   }
 
   @Get()
@@ -23,8 +33,14 @@ export class PublicationsController {
   }
 
   @Patch(':id')
-  async updatePublication(@Param('id') id: string, @Body() updatePublicationDto: UpdatePublicationDto) {
-    return await this.publicationsService.updatePublication(+id, updatePublicationDto);
+  async updatePublication(
+    @Param('id') id: string,
+    @Body() updatePublicationDto: UpdatePublicationDto,
+  ) {
+    return await this.publicationsService.updatePublication(
+      +id,
+      updatePublicationDto,
+    );
   }
 
   @Delete(':id')

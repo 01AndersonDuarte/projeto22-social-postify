@@ -1,11 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 
 @Controller('medias')
 export class MediasController {
-  constructor(private readonly mediasService: MediasService) { }
+  constructor(private readonly mediasService: MediasService) {}
 
   @Post()
   async createMedia(@Body() createMediaDto: CreateMediaDto) {
@@ -23,12 +31,15 @@ export class MediasController {
   }
 
   @Patch(':id')
-  async updateMedia(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
+  async updateMedia(
+    @Param('id') id: string,
+    @Body() updateMediaDto: UpdateMediaDto,
+  ) {
     return await this.mediasService.updateMedia(+id, updateMediaDto);
   }
 
   @Delete(':id')
-  removeMedia(@Param('id') id: string) {
-    return this.mediasService.removeMedia(+id);
+  async removeMedia(@Param('id') id: string) {
+    return await this.mediasService.removeMedia(+id);
   }
 }

@@ -1,14 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { PrismaModule } from '../src/prisma/prisma.module';
-import { PrismaService } from '../src/prisma/prisma.service';
-import { createMedia } from './factories/media-factory';
+import { AppModule } from '../../src/app.module';
+import { PrismaModule } from '../../src/prisma/prisma.module';
+import { PrismaService } from '../../src/prisma/prisma.service';
+import { createMedia } from '.././factories/media-factory';
 import { Media } from '@prisma/client';
+import { createPublication } from '.././factories/publication-factory';
 
 let app: INestApplication;
-let prisma: PrismaService
+let prisma: PrismaService;
 
 beforeEach(async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,9 +20,9 @@ beforeEach(async () => {
   app.useGlobalPipes(new ValidationPipe());
   prisma = app.get(PrismaService);
 
+  await prisma.publication.deleteMany();
   await prisma.media.deleteMany();
   await prisma.post.deleteMany();
-  await prisma.publication.deleteMany();
 
   await app.init();
 });
@@ -31,7 +32,7 @@ describe('MediasController (e2e)', () => {
     await request(app.getHttpServer())
       .post('/medias')
       .send({
-        title: "Instagram"
+        title: 'Instagram',
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
@@ -42,26 +43,26 @@ describe('MediasController (e2e)', () => {
       .post('/medias')
       .send({
         title: mediaFactory.title,
-        username: mediaFactory.username
+        username: mediaFactory.username,
       })
       .expect(HttpStatus.CONFLICT);
 
-    expect(media.body.message).toBe("Item já criado");
+    expect(media.body.message).toBe('Item já criado');
   });
 
   it('POST /medias => Should respond with status 201 when body is valid', async () => {
     const media = await request(app.getHttpServer())
       .post('/medias')
       .send({
-        title: "Instagram",
-        username: "@anderson"
+        title: 'Instagram',
+        username: '@anderson',
       })
       .expect(HttpStatus.CREATED);
 
     expect(media.body).toEqual({
       id: expect.any(Number),
-      title: "Instagram",
-      username: "@anderson"
+      title: 'Instagram',
+      username: '@anderson',
     });
   });
 
@@ -79,11 +80,13 @@ describe('MediasController (e2e)', () => {
       .get('/medias')
       .expect(HttpStatus.OK);
 
-    expect(medias.body).toEqual([{
-      id: mediaFactory.id,
-      title: mediaFactory.title,
-      username: mediaFactory.username
-    }]);
+    expect(medias.body).toEqual([
+      {
+        id: mediaFactory.id,
+        title: mediaFactory.title,
+        username: mediaFactory.username,
+      },
+    ]);
   });
 
   it('GET /medias/:id => Should respond with status 400 when id is invalid', async () => {
@@ -91,7 +94,7 @@ describe('MediasController (e2e)', () => {
       .get('/medias/1')
       .expect(HttpStatus.NOT_FOUND);
 
-    expect(mediaId.body.message).toEqual("Registro não encontrado");
+    expect(mediaId.body.message).toEqual('Registro não encontrado');
   });
 
   it('GET /medias/:id => Should respond with status 200 when id is valid', async () => {
@@ -103,7 +106,7 @@ describe('MediasController (e2e)', () => {
     expect(mediaId.body).toEqual({
       id: mediaFactory.id,
       title: mediaFactory.title,
-      username: mediaFactory.username
+      username: mediaFactory.username,
     });
   });
 
@@ -111,20 +114,20 @@ describe('MediasController (e2e)', () => {
     const mediaUp = await request(app.getHttpServer())
       .patch('/medias/5')
       .send({
-        title: "Instagram",
-        username: "@anderson"
+        title: 'Instagram',
+        username: '@anderson',
       })
       .expect(HttpStatus.NOT_FOUND);
 
-    expect(mediaUp.body.message).toEqual("Registro não encontrado");
+    expect(mediaUp.body.message).toEqual('Registro não encontrado');
   });
 
   it('UPDATE /medias/:id => Should respond with status 400 when body is invalid', async () => {
     const mediaFactory: Media = await createMedia(prisma);
-    const mediaUp = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .patch(`/medias/${mediaFactory.id}`)
       .send({
-        title: "Instagram"
+        title: 'Instagram',
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
@@ -134,15 +137,41 @@ describe('MediasController (e2e)', () => {
     const mediaUp = await request(app.getHttpServer())
       .patch(`/medias/${mediaFactory.id}`)
       .send({
-        title: "Instagram",
-        username: "@anderson"
+        title: 'Instagram',
+        username: '@anderson',
       })
       .expect(HttpStatus.OK);
 
     expect(mediaUp.body).toEqual({
       id: mediaFactory.id,
-      title: "Instagram",
-      username: "@anderson"
+      title: 'Instagram',
+      username: '@anderson',
     });
+  });
+
+  it('DELETE /medias/:id => Should respond with status 404 when id is not valid', async () => {
+    const mediaDelete = await request(app.getHttpServer())
+      .delete('/medias/1')
+      .expect(HttpStatus.NOT_FOUND);
+
+    expect(mediaDelete.body.message).toBe('Registro não encontrado');
+  });
+
+  it('DELETE /medias/:id => Should respond with status 403 when media cannot be deleted', async () => {
+    const { mediaId } = await createPublication(prisma);
+
+    const mediaDelete = await request(app.getHttpServer())
+      .delete(`/medias/${mediaId}`)
+      .expect(HttpStatus.FORBIDDEN);
+
+    expect(mediaDelete.body.message).toBe('Publicação já criada!');
+  });
+
+  it('DELETE /medias/:id => Should respond with status 200 when media is deleted', async () => {
+    const mediaFactory: Media = await createMedia(prisma);
+
+    await request(app.getHttpServer())
+      .delete(`/medias/${mediaFactory.id}`)
+      .expect(HttpStatus.OK);
   });
 });

@@ -5,21 +5,20 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MediasRepository {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async verifyMedia(createMediaDto: CreateMediaDto) {
     return await this.prisma.media.findFirst({
       where: {
         title: createMediaDto.title,
-        username: createMediaDto.username
-      }
+        username: createMediaDto.username,
+      },
     });
   }
 
   async createMedia(createMediaDto: CreateMediaDto) {
     return await this.prisma.media.create({
-      data: createMediaDto
+      data: createMediaDto,
     });
   }
 
@@ -30,26 +29,26 @@ export class MediasRepository {
   async findMediaById(id: number) {
     return this.prisma.media.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
   async updateMedia(id: number, updateMediaDto: UpdateMediaDto) {
     return await this.prisma.media.update({
       where: {
-        id
+        id,
       },
       data: {
         title: updateMediaDto.title,
-        username: updateMediaDto.username
-      }
+        username: updateMediaDto.username,
+      },
     });
   }
 
-  removeMedia(id: number) {
-    return this.prisma.media.delete({
-      where: { id }
+  async removeMedia(id: number) {
+    return await this.prisma.media.delete({
+      where: { id },
     });
   }
 }
